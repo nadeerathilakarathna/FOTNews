@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="@drawable/bg_login"
+
+    >
+
+
+    <LinearLayout
+        android:paddingTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="SIGN UP"
+            android:textColor="@color/color_primary"
+            android:textSize="28dp"
+            android:layout_marginTop="80dp"
+            />
+
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:hint="Name"
+        android:height="20dp"
+        android:inputType="text"
+        android:background="@drawable/edittext_border"
+        android:elevation="6dp"
+        android:translationZ="4dp"
+
+        />
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:hint="Email"
+            android:height="20dp"
+            android:inputType="text"
+            android:background="@drawable/edittext_border"
+            android:elevation="6dp"
+            android:translationZ="4dp"
+            android:layout_marginTop="12dp"
+
+            />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_marginTop="16dp"
+            android:padding="12dp"
+            android:background="@drawable/edittext_border"
+            android:elevation="6dp"
+            android:translationZ="4dp"
+            />
+
+
+    <EditText
+        android:id="@+id/cpassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm password"
+        android:inputType="textPassword"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:background="@drawable/edittext_border"
+        android:elevation="6dp"
+        android:translationZ="4dp"
+        />
+
+    <Button
+        android:id="@+id/signupButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="1dp"
+
+        android:background="@drawable/button_submit"
+        android:text="SIGN UP"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="20dp"
+        android:backgroundTint="@color/color_secondary"
+        android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tvNavigateSignup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Already have an Account: Log In"
+        android:textColor="@color/color_primary"
+        android:layout_gravity="center_horizontal"
+        android:autoLink="none"
+        android:clickable="true"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        android:layout_marginBottom="31dp"
+        />
+
+
+</LinearLayout>

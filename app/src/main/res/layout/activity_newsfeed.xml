@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rootView"
+    android:background="@drawable/bg_splash"
+    >
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_primary"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:title="NEWS FEED"
+        app:titleCentered="true"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_menu"
+        app:navigationContentDescription="Settings"
+
+        >
+
+
+        <ImageButton
+            android:id="@+id/profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_profile"
+            android:background="@android:color/transparent"
+            android:layout_gravity="end"
+            android:padding="10dp">
+        </ImageButton>
+
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+
+
+    <LinearLayout
+        android:id="@+id/Hello"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="56dp"
+        android:orientation="vertical"
+        android:scrollbars="vertical"
+        >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/fragment_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    />
+
+<!--                <ImageView-->
+<!--                    android:layout_width="300dp"-->
+<!--                    android:layout_height="300dp"-->
+<!--                    android:src="@drawable/full_logo"/>-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="300dp"-->
+<!--                    android:layout_height="300dp"-->
+<!--                    android:src="@drawable/full_logo"/>-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="300dp"-->
+<!--                    android:layout_height="300dp"-->
+<!--                    android:src="@drawable/full_logo"/>-->
+
+            </LinearLayout>
+        </ScrollView>
+
+
+
+
+    </LinearLayout>
+
+
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/color_primary"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
+        app:menu="@menu/bottom_nav_menu"
+        />
+
+
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Border radius -->
+    <corners android:radius="5dp" />
+
+    <!-- Border color and weight -->
+    <stroke
+        android:width="2dp"
+        android:color="@color/color_primary" /> <!-- red border -->
+
+    <!-- Background color inside EditText -->
+    <solid android:color="#FFFFFF" />
+</shape>

@@ -1,0 +1,93 @@
+package com.example.fotnews;
+
+import android.content.Context;
+import android.text.format.DateUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+
+
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
+
+    private Context context;
+    private List<NewsItem> newsList;
+
+    public static String getCustomRelativeTime(long pastTimeMillis) {
+        long now = System.currentTimeMillis();
+        long diff = now - pastTimeMillis;
+
+        long seconds = diff / 1000;
+        long minutes = seconds / 60;
+        long hours   = minutes / 60;
+        long days    = hours / 24;
+        long months  = days / 30;
+        long years   = days / 365;
+
+        if (seconds < 60) {
+            return seconds + "s";
+        } else if (minutes < 60) {
+            return minutes + "min";
+        } else if (hours < 24) {
+            return hours + "h";
+        } else if (days < 30) {
+            return days + "d";
+        } else if (months < 12) {
+            return months + "m";
+        } else {
+            return years + "y";
+        }
+    }
+
+    public NewsAdapter(Context context, List<NewsItem> newsList) {
+        this.context = context;
+        this.newsList = newsList;
+    }
+
+    @Override
+    public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_news, parent, false);
+        return new NewsViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(NewsViewHolder holder, int position) {
+        NewsItem item = newsList.get(position);
+        holder.title.setText(item.title);
+        holder.content.setText(item.content);
+        holder.category.setImageResource(item.category);
+        holder.image.setImageResource(item.imageResId);
+
+        String relativeTime = getCustomRelativeTime(item.timestamp);
+        holder.time.setText(relativeTime);
+    }
+
+    @Override
+    public int getItemCount() {
+        return newsList.size();
+    }
+
+    public static class NewsViewHolder extends RecyclerView.ViewHolder {
+        TextView title, content, time;
+        ImageView image;
+        ImageView category;
+
+        public NewsViewHolder(View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.newsTitle);
+            content = itemView.findViewById(R.id.newsContent);
+            time = itemView.findViewById(R.id.newsTime);
+            category = itemView.findViewById(R.id.newsCategory);
+            image = itemView.findViewById(R.id.newsImage);
+        }
+    }
+}
+
+

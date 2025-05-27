@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="@drawable/bg_login"
+
+    >
+
+
+    <LinearLayout
+        android:paddingTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SIGN IN"
+        android:textColor="@color/color_primary"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="28dp"
+        />
+
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:hint="Username"
+        android:height="20dp"
+        android:inputType="text"
+        android:background="@drawable/edittext_border"
+        android:elevation="6dp"
+        android:translationZ="4dp"
+
+        />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:background="@drawable/edittext_border"
+        android:elevation="6dp"
+        android:translationZ="4dp"
+        />
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="1dp"
+
+        android:background="@drawable/button_submit"
+        android:text="SIGN IN"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="20dp"
+        android:backgroundTint="@color/color_secondary"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:id="@+id/tvForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Froget Password?"
+        android:textColor="@color/color_primary"
+        android:layout_gravity="center_horizontal"
+        android:autoLink="none"
+        android:clickable="true"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        android:layout_marginTop="14dp"
+        />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tvNavigateSignup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You haven’t Account yet: Sign Up "
+        android:textColor="@color/color_primary"
+        android:layout_gravity="center_horizontal"
+        android:autoLink="none"
+        android:clickable="true"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        android:layout_marginBottom="31dp"
+
+
+        />
+
+
+</LinearLayout>
