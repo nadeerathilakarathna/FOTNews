@@ -1,0 +1,11 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="RoundedCornerImage" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">80dp</item>
+        <item name="strokeColor">#80041950</item>
+        <item name="strokeWidth">3dp</item>
+    </style>
+
+</resources>

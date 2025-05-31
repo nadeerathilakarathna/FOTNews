@@ -1,8 +1,13 @@
 package com.example.fotnews;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -17,7 +22,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class FeedActivity extends AppCompatActivity {
-
+    private static final String TAG = "FOTNewsLog";
     private MaterialToolbar topAppBars;
     private BottomNavigationView bottomNavigationView;
 
@@ -32,8 +37,6 @@ public class FeedActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_newsfeed);
-
-
         topAppBars = findViewById(R.id.topAppBar);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -78,25 +81,17 @@ public class FeedActivity extends AppCompatActivity {
             return true;
         });
 
-        // Settings (left) click
-        topAppBars.setNavigationOnClickListener(v ->
-                Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
-        );
-
-        // Profile (right) click
-        topAppBars.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.profile) {
-                Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            return false;
-        });
-
-
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
+        topAppBars.inflateMenu(R.menu.feed_top_menu);
 
 
+
+        topAppBars.setNavigationOnClickListener(view -> {
+            Intent intent = new Intent(FeedActivity.this, DeveloperActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
 
 
@@ -113,10 +108,26 @@ public class FeedActivity extends AppCompatActivity {
 
 
 
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.feed_top_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        if(item.getItemId()== R.id.menu_profile){
+            Intent intent = new Intent(FeedActivity.this, ProfileActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
         }
-
-
-
+        return super.onOptionsItemSelected(item);
+    }
 
 
 
