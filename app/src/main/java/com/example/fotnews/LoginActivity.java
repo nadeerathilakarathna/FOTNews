@@ -6,10 +6,14 @@ import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.button.MaterialButton;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText, passwordEditText;
@@ -27,6 +31,11 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = findViewById(R.id.loginButton);
         TextView forgotText = findViewById(R.id.tvForgotPassword);
         TextView signinText = findViewById(R.id.tvNavigateSignup);
+        LinearLayout alert_reset_password = findViewById(R.id.userview_frogot_password);
+        ImageButton btn_reset_password_close = findViewById(R.id.close_froget_password);
+        MaterialButton btn_reset_password_yes = findViewById(R.id.btn_froget_password_yes);
+        MaterialButton btn_reset_password_no = findViewById(R.id.btn_froget_password_no);
+
 
         // Make text underlined
         forgotText.setText(Html.fromHtml("<u>Forgot Password?</u>"));
@@ -38,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                if (username.equals("admin") && password.equals("admin")) {
+                if (username.equals("") && password.equals("")) {
                     Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
                     // Proceed to next activity if needed
                     Intent intent = new Intent(LoginActivity.this, FeedActivity.class);
@@ -56,6 +65,32 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        forgotText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert_reset_password.setVisibility(View.VISIBLE);
+            }
+        });
+        btn_reset_password_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert_reset_password.setVisibility(View.GONE);
+            }
+        });
+        btn_reset_password_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(LoginActivity.this, "Reset Link sent successful", Toast.LENGTH_SHORT).show();
+                alert_reset_password.setVisibility(View.GONE);
+            }
+        });
+        btn_reset_password_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert_reset_password.setVisibility(View.GONE);
             }
         });
     }
