@@ -52,7 +52,7 @@
             android:padding="12dp"
             android:hint="Email"
             android:height="20dp"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:background="@drawable/edittext_border"
             android:elevation="6dp"
             android:translationZ="4dp"

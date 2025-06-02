@@ -11,11 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.FirebaseTooManyRequestsException;
@@ -95,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AuthCheck.redirectFeed(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }

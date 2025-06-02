@@ -17,13 +17,30 @@ import androidx.core.view.ViewCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileActivity extends AppCompatActivity {
+
+
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    private void logoutUser(LinearLayout alert_background,CoordinatorLayout alert_logout) {
+        FirebaseAuth.getInstance().signOut();
+        alert_background.setVisibility(View.GONE);
+        alert_logout.setVisibility(View.GONE);
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        AuthCheck.redirectLogin(this);
         setContentView(R.layout.activity_profile);
 
 
@@ -115,15 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
         btn_logout_yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alert_background.setVisibility(View.GONE);
-                alert_logout.setVisibility(View.GONE);
-                Toast.makeText(ProfileActivity.this, "Successfully Logout",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-
-
-
+                logoutUser(alert_background,alert_logout);
             }
         });
 
