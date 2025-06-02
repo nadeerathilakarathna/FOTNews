@@ -41,7 +41,6 @@ public class DeveloperActivity extends AppCompatActivity {
         // Settings (left) click
         devAppBar.setNavigationOnClickListener(view -> {
             Log.i(TAG, "Navigation Bar clicked");
-            Toast.makeText(DeveloperActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(DeveloperActivity.this, FeedActivity.class);
             startActivity(intent);
             finish();

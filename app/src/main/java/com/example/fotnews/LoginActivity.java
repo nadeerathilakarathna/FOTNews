@@ -160,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alert_reset_password.setVisibility(View.VISIBLE);
-                edittext_reset_email.setText("Hello");
+                edittext_reset_email.setText("");
             }
         });
         btn_reset_password_close.setOnClickListener(new View.OnClickListener() {

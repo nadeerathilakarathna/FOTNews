@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ import androidx.core.view.ViewCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.material.textfield.TextInputEditText;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -44,11 +46,24 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
 
+
         MaterialToolbar profileAppBar = findViewById(R.id.profileappbar);
         setSupportActionBar(profileAppBar);
 
+        TextView txt_username = findViewById(R.id.user_name);
+        TextView txt_useremail = findViewById(R.id.user_email);
+
+        TextInputEditText inp_username = findViewById(R.id.edit_name);
+        TextInputEditText inp_email = findViewById(R.id.edit_email);
+        TextInputEditText inp_password = findViewById(R.id.edit_password);
+        TextInputEditText inp_cpassword = findViewById(R.id.edit_cpassword);
+        TextInputEditText inp_oldpassword = findViewById(R.id.edit_oldpassword);
+
+        FirebaseHelper.getUserDetails(ProfileActivity.this, txt_username, txt_useremail,inp_username,inp_email,inp_oldpassword,inp_password,inp_cpassword);
+
+
+
         profileAppBar.setNavigationOnClickListener(view -> {
-            Toast.makeText(ProfileActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ProfileActivity.this, FeedActivity.class);
             startActivity(intent);
             finish();
@@ -65,6 +80,12 @@ public class ProfileActivity extends AppCompatActivity {
             return insets;
         });
 
+
+
+
+
+
+
         MaterialButton btn_edit_profile = findViewById(R.id.btn_edit_profile);
         MaterialButton btn_logout = findViewById(R.id.btn_logout);
         LinearLayout alert_background = findViewById(R.id.userview_edit);
@@ -77,11 +98,18 @@ public class ProfileActivity extends AppCompatActivity {
         MaterialButton btn_logout_yes = findViewById(R.id.btn_logout_yes);
         MaterialButton btn_logout_no = findViewById(R.id.btn_logout_no);
 
+        alert_background.setVisibility(View.GONE);
+        alert_edit_profile.setVisibility(View.GONE);
+        alert_logout.setVisibility(View.GONE);
+
 
 
         btn_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                inp_password.setText("");
+                inp_cpassword.setText("");
+                inp_oldpassword.setText("");
                 alert_background.setVisibility(View.VISIBLE);
                 alert_edit_profile.setVisibility(View.VISIBLE);
             }
@@ -90,18 +118,50 @@ public class ProfileActivity extends AppCompatActivity {
         btn_close_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseHelper.getUserDetails(ProfileActivity.this, txt_username, txt_useremail,inp_username,inp_email,inp_oldpassword,inp_password,inp_cpassword);
                 alert_background.setVisibility(View.GONE);
                 alert_edit_profile.setVisibility(View.GONE);
+
             }
         });
 
-        btn_edit_profile_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ProfileActivity.this, "Saved",Toast.LENGTH_SHORT).show();
+        btn_edit_profile_save.setOnClickListener(v -> {
+            String newUsername = inp_username.getText().toString().trim();
+            String oldPassword = inp_oldpassword.getText().toString().trim();
+            String newPassword = inp_password.getText().toString().trim();
+            String confirmPassword = inp_cpassword.getText().toString().trim();
+
+            if (newUsername.isEmpty()) {
+                inp_username.setError("Username required");
+                return;
+            }
+
+            if (!(oldPassword.isEmpty() && newPassword.isEmpty() && confirmPassword.isEmpty())) {
+
+                if (oldPassword.isEmpty()) {
+                    inp_oldpassword.setError("Old password required");
+                    return;
+                }
+
+                if ((newPassword.isEmpty() || newPassword.length() < 8)) {
+                    inp_password.setError("Password must be 8+ characters");
+                    return;
+                }
+
+                if (confirmPassword.isEmpty()) {
+                    inp_cpassword.setError("Please input confirm password");
+                    return;
+                }
+                if (!confirmPassword.equals(newPassword)) {
+                    inp_cpassword.setError("Password does not match");
+                    return;
+                }
+            }
+
+            FirebaseHelper.updateUserProfile(ProfileActivity.this, newUsername, oldPassword, newPassword, () -> {
                 alert_background.setVisibility(View.GONE);
                 alert_edit_profile.setVisibility(View.GONE);
-            }
+            });
         });
 
         btn_edit_profile_cancel.setOnClickListener(new View.OnClickListener() {

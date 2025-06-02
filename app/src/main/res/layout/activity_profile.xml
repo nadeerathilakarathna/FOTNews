@@ -156,7 +156,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_fade"
-        android:visibility="gone"
+        android:orientation="horizontal"
+        android:visibility="visible"
         >
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -167,7 +168,7 @@
             android:layout_margin="10dp"
             android:padding="10dp"
             android:background="@drawable/bg_profile"
-            android:visibility="gone"
+            android:visibility="visible"
             >
 
             <ImageButton
@@ -237,8 +238,43 @@
                         android:layout_height="match_parent"
                         android:padding="10dp"
                         android:backgroundTint="@color/white"
-                        android:inputType="textPersonName"
+                        android:inputType="textEmailAddress"
                         android:text="example@gmail.com"
+                        android:textSize="18dp"
+                        android:enabled="false"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Change Password"
+                    android:gravity="center"
+                    android:textSize="19dp"
+                    android:paddingTop="20dp"
+                    android:textColor="@color/color_primary"
+                    android:textStyle="bold"
+                    />
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/RoundedTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxStrokeWidth="2dp"
+                    app:boxStrokeColor="@color/color_primary"
+                    app:boxBackgroundMode="outline"
+                    android:elevation="6dp"
+                    android:translationZ="4dp"
+                    android:paddingTop="0dp"
+                    android:hint="Old Password">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_oldpassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:backgroundTint="@color/white"
+                        android:inputType="textPassword"
                         android:textSize="18dp"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -261,12 +297,10 @@
                         android:padding="10dp"
                         android:backgroundTint="@color/white"
                         android:inputType="textPassword"
-                        android:text="********"
                         android:textSize="18dp"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/edit_cpassword"
                     style="@style/RoundedTextInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -279,12 +313,12 @@
                     android:hint="Confirm Password">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_cpassword"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="10dp"
                         android:backgroundTint="@color/white"
                         android:inputType="textPassword"
-                        android:text="********"
                         android:textSize="18dp"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
