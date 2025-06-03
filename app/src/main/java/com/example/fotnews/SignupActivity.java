@@ -1,32 +1,57 @@
 package com.example.fotnews;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SignupActivity extends AppCompatActivity {
     private EditText edit_name,edit_email,edit_password, edit_cpassword;
     private String name, email, password, cpassword;
     private Button btn_signup;
 
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
+
         AuthCheck.redirectFeed(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
+
+
         setContentView(R.layout.activity_signup);
+
+        LinearLayout progressBar = findViewById(R.id.progressBar);
+        progressBar.setBackgroundColor(Color.parseColor("#80000000"));
+
+        Runnable progressbar_start_loader = () -> {
+            progressBar.setVisibility(View.VISIBLE);
+        };
+
+        Runnable progressbar_stop_loader = () -> {
+            progressBar.setVisibility(View.GONE);
+        };
 
         edit_name = findViewById(R.id.name);
         edit_email = findViewById(R.id.email);
@@ -38,8 +63,6 @@ public class SignupActivity extends AppCompatActivity {
         email = edit_email.toString().trim();
         password = edit_password.toString().trim();
         cpassword = edit_cpassword.toString().trim();
-
-
 
 
 
@@ -78,7 +101,7 @@ public class SignupActivity extends AppCompatActivity {
                 }
 
                 // Register using helper
-                FirebaseHelper.registerUser(name, email, password, SignupActivity.this);
+                FirebaseHelper.registerUser(name, email, password, SignupActivity.this, progressbar_start_loader, progressbar_stop_loader);
             }
         });
 
@@ -103,5 +126,15 @@ public class SignupActivity extends AppCompatActivity {
                 }
         );
 
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

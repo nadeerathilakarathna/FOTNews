@@ -1,6 +1,7 @@
 package com.example.fotnews;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,10 +27,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-    private void logoutUser(LinearLayout alert_background,CoordinatorLayout alert_logout) {
+    private void logoutUser(LinearLayout alert_background,CoordinatorLayout alert_logout, Runnable onLoaded) {
         FirebaseAuth.getInstance().signOut();
         alert_background.setVisibility(View.GONE);
         alert_logout.setVisibility(View.GONE);
+        onLoaded.run();
         Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
@@ -45,6 +47,10 @@ public class ProfileActivity extends AppCompatActivity {
         AuthCheck.redirectLogin(this);
         setContentView(R.layout.activity_profile);
 
+        LinearLayout progressBar = findViewById(R.id.progressBar);
+        progressBar.setBackgroundColor(Color.parseColor("#80000000"));
+        progressBar.setVisibility(View.VISIBLE);
+
 
 
         MaterialToolbar profileAppBar = findViewById(R.id.profileappbar);
@@ -59,7 +65,11 @@ public class ProfileActivity extends AppCompatActivity {
         TextInputEditText inp_cpassword = findViewById(R.id.edit_cpassword);
         TextInputEditText inp_oldpassword = findViewById(R.id.edit_oldpassword);
 
-        FirebaseHelper.getUserDetails(ProfileActivity.this, txt_username, txt_useremail,inp_username,inp_email,inp_oldpassword,inp_password,inp_cpassword);
+        Log.d("ProfileActivity", "Before getting user details 1");
+        FirebaseHelper.getUserDetails(ProfileActivity.this, txt_username, txt_useremail,inp_username,inp_email,inp_oldpassword,inp_password,inp_cpassword, () -> {
+            progressBar.setVisibility(View.GONE);
+        });
+        Log.d("ProfileActivity", "After getting user details 2");
 
 
 
@@ -118,7 +128,13 @@ public class ProfileActivity extends AppCompatActivity {
         btn_close_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseHelper.getUserDetails(ProfileActivity.this, txt_username, txt_useremail,inp_username,inp_email,inp_oldpassword,inp_password,inp_cpassword);
+                Log.d("ProfileActivity", "Before getting user details 3");
+                FirebaseHelper.getUserDetails(ProfileActivity.this, txt_username, txt_useremail,inp_username,inp_email,inp_oldpassword,inp_password,inp_cpassword, () -> {
+
+                    progressBar.setVisibility(View.GONE);
+                });
+
+                Log.d("ProfileActivity", "Before getting user details 4");
                 alert_background.setVisibility(View.GONE);
                 alert_edit_profile.setVisibility(View.GONE);
 
@@ -126,6 +142,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         btn_edit_profile_save.setOnClickListener(v -> {
+
             String newUsername = inp_username.getText().toString().trim();
             String oldPassword = inp_oldpassword.getText().toString().trim();
             String newPassword = inp_password.getText().toString().trim();
@@ -158,7 +175,13 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
 
-            FirebaseHelper.updateUserProfile(ProfileActivity.this, newUsername, oldPassword, newPassword, () -> {
+            Runnable progress_loader = () -> {
+                progressBar.setVisibility(View.GONE);
+            };
+
+
+            progressBar.setVisibility(View.VISIBLE);
+            FirebaseHelper.updateUserProfile(ProfileActivity.this, newUsername, oldPassword, newPassword, progress_loader, () -> {
                 alert_background.setVisibility(View.GONE);
                 alert_edit_profile.setVisibility(View.GONE);
             });
@@ -192,7 +215,11 @@ public class ProfileActivity extends AppCompatActivity {
         btn_logout_yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logoutUser(alert_background,alert_logout);
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setBackgroundColor(Color.parseColor("#80000000"));
+                logoutUser(alert_background,alert_logout, () -> {
+                    progressBar.setVisibility(View.GONE);
+                });
             }
         });
 
@@ -208,7 +235,13 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(ProfileActivity.this, FeedActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

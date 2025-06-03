@@ -1,7 +1,6 @@
 package com.example.fotnews;
 
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -20,31 +21,37 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     private Context context;
     private List<NewsItem> newsList;
 
-    public static String getCustomRelativeTime(long pastTimeMillis) {
-        long now = System.currentTimeMillis();
-        long diff = now - pastTimeMillis;
+    public static String getCustomRelativeTime(String unixTimestampStr) {
+        try {
+            long pastTimeMillis = Long.parseLong(unixTimestampStr) * 1000L;
+            long now = System.currentTimeMillis();
+            long diff = now - pastTimeMillis;
 
-        long seconds = diff / 1000;
-        long minutes = seconds / 60;
-        long hours   = minutes / 60;
-        long days    = hours / 24;
-        long months  = days / 30;
-        long years   = days / 365;
+            long seconds = diff / 1000;
+            long minutes = seconds / 60;
+            long hours   = minutes / 60;
+            long days    = hours / 24;
+            long months  = days / 30;
+            long years   = days / 365;
 
-        if (seconds < 60) {
-            return seconds + "s";
-        } else if (minutes < 60) {
-            return minutes + "min";
-        } else if (hours < 24) {
-            return hours + "h";
-        } else if (days < 30) {
-            return days + "d";
-        } else if (months < 12) {
-            return months + "m";
-        } else {
-            return years + "y";
+            if (seconds < 60) {
+                return seconds + "s";
+            } else if (minutes < 60) {
+                return minutes + "min";
+            } else if (hours < 24) {
+                return hours + "h";
+            } else if (days < 30) {
+                return days + "d";
+            } else if (months < 12) {
+                return months + "mo";
+            } else {
+                return years + "y";
+            }
+        } catch (NumberFormatException e) {
+            return "Invalid";
         }
     }
+
 
     public NewsAdapter(Context context, List<NewsItem> newsList) {
         this.context = context;
@@ -63,10 +70,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         holder.title.setText(item.title);
         holder.content.setText(item.content);
         holder.category.setImageResource(item.category);
-        holder.image.setImageResource(item.imageResId);
 
         String relativeTime = getCustomRelativeTime(item.timestamp);
         holder.time.setText(relativeTime);
+
+        Glide.with(context)
+                .load(item.image_url)
+                .placeholder(R.drawable.example_news)
+                .error(R.drawable.example_news)
+                .into(holder.image);
     }
 
     @Override

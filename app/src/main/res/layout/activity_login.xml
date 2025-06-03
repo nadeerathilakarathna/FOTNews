@@ -230,4 +230,8 @@
 
     </LinearLayout>
 
+    <include
+        layout="@layout/progressbar"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

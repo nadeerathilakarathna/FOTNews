@@ -73,7 +73,7 @@
                         android:layout_gravity="center"
                         android:paddingBottom="20dp"
                         android:id="@+id/user_name"
-                        android:text="User`s Name"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -92,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:paddingBottom="20dp"
-                        android:text="example@gmail.com"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -216,7 +216,7 @@
                         android:padding="10dp"
                         android:backgroundTint="@color/white"
                         android:inputType="textPersonName"
-                        android:text="User`s Name"
+                        android:text=""
                         android:textSize="18dp"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -239,7 +239,7 @@
                         android:padding="10dp"
                         android:backgroundTint="@color/white"
                         android:inputType="textEmailAddress"
-                        android:text="example@gmail.com"
+                        android:text=""
                         android:textSize="18dp"
                         android:enabled="false"
                         />
@@ -449,6 +449,10 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </LinearLayout>
+
+    <include
+        layout="@layout/progressbar"
+        />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

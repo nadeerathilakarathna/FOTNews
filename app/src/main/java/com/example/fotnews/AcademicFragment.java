@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,36 +21,24 @@ public class AcademicFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_academic, container, false);
+        View view = inflater.inflate(R.layout.fragment_news, container, false);
+        LinearLayout progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
 
         RecyclerView recyclerView = view.findViewById(R.id.newsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         List<NewsItem> sampleData = new ArrayList<>();
-        sampleData.add(new NewsItem(
-                "University Seminar on AI",
-                "A panel of experts discussed the future of AI in education...",
-                System.currentTimeMillis() - 2 * 60 * 60 * 1000, // 2 hours ago
-                R.drawable.ic_academic,
-                R.drawable.sample_news));
-
-        sampleData.add(new NewsItem(
-                "Exam Timetable Released",
-                "Check the faculty website to download your personal exam schedule.",
-                System.currentTimeMillis() - 8 * 60 * 60 * 1000, // 8 hours ago
-                R.drawable.ic_academic,
-                R.drawable.sample_news));
-
-        sampleData.add(new NewsItem(
-                "Library Open Late",
-                "University Library hours extended till 10 PM during exam week.",
-                System.currentTimeMillis() - 24 * 60 * 60 * 1000, // 1 day ago
-                R.drawable.ic_academic,
-                R.drawable.sample_news));
-
         NewsAdapter adapter = new NewsAdapter(getContext(), sampleData);
         recyclerView.setAdapter(adapter);
 
+        FirebaseHelper.loadNews(0, sampleData, getContext(), adapter, () -> {
+            progressBar.setVisibility(View.GONE);
+        });
+
+
         return view;
+
+
     }
 }

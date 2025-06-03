@@ -1,13 +1,13 @@
 package com.example.fotnews;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -24,10 +24,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class FirebaseHelper {
 
-    public static void registerUser(String name, String email, String password, Activity activity) {
+
+
+
+    public static void registerUser(String name, String email, String password, Activity activity, Runnable progressbar_start_loader, Runnable progressbar_stop_loader) {
+
+        progressbar_start_loader.run();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users");
 
@@ -48,14 +54,17 @@ public class FirebaseHelper {
                                 .addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         Toast.makeText(activity, "Registration Successful", Toast.LENGTH_SHORT).show();
+                                        progressbar_stop_loader.run();
                                         Intent intent = new Intent(activity, FeedActivity.class);
                                         activity.startActivity(intent);
                                         activity.finish();
                                     } else {
+                                        progressbar_stop_loader.run();
                                         handleLoginError(task1.getException(), activity);
                                     }
                                 });
                     } else {
+                        progressbar_stop_loader.run();
                         handleLoginError(task.getException(), activity);
                     }
                 });
@@ -81,7 +90,7 @@ public class FirebaseHelper {
 
 
 
-    public static void getUserDetails(Activity activity, TextView nameView, TextView emailView, TextInputEditText edit_name, TextInputEditText edit_email, TextInputEditText edit_oldpassword, TextInputEditText edit_newpassword, TextInputEditText edit_confirmpassword) {
+    public static void getUserDetails(Activity activity, TextView nameView, TextView emailView, TextInputEditText edit_name, TextInputEditText edit_email, TextInputEditText edit_oldpassword, TextInputEditText edit_newpassword, TextInputEditText edit_confirmpassword, Runnable onLoaded ) {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference dbRef = FirebaseDatabase
                 .getInstance()
@@ -100,19 +109,24 @@ public class FirebaseHelper {
                     emailView.setText(email);
                     edit_name.setText(name);
                     edit_email.setText(email);
+                    onLoaded.run();
+
 
                 } else {
                     Toast.makeText(activity, "User data not found", Toast.LENGTH_SHORT).show();
+                    onLoaded.run();
+
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 Toast.makeText(activity, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+
             }
         });
     }
-    public static void updateUserProfile(Activity activity, String newUsername, String oldPassword, String newPassword, Runnable onSuccess) {
+    public static void updateUserProfile(Activity activity, String newUsername, String oldPassword, String newPassword,Runnable progressOnLoaded, Runnable onSuccess) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) return;
@@ -134,10 +148,12 @@ public class FirebaseHelper {
                             Toast.makeText(activity, "Username updated successfully", Toast.LENGTH_SHORT).show();
                             if (!needsPasswordUpdate) {
                                 onSuccess.run(); // Only username changed
+                                progressOnLoaded.run();
                             }
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(activity, "Username update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            progressOnLoaded.run();
                         });
             }
 
@@ -151,16 +167,20 @@ public class FirebaseHelper {
                                             Toast.makeText(activity, "Password updated successfully", Toast.LENGTH_SHORT).show();
                                             if (!needsUsernameUpdate) {
                                                 onSuccess.run(); // Only password changed
+                                                progressOnLoaded.run();
                                             } else if (needsUsernameUpdate) {
                                                 onSuccess.run(); // Both done
+                                                progressOnLoaded.run();
                                             }
                                         })
                                         .addOnFailureListener(e -> {
+                                            progressOnLoaded.run();
                                             Toast.makeText(activity, "Password update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         });
                             }
                         })
                         .addOnFailureListener(e -> {
+                            progressOnLoaded.run();
                             Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
             }
@@ -168,12 +188,75 @@ public class FirebaseHelper {
             // If no username or password update needed
             if (!needsUsernameUpdate && !needsPasswordUpdate) {
                 onSuccess.run();
+                progressOnLoaded.run();
             }
 
         }).addOnFailureListener(e -> {
+            progressOnLoaded.run();
             Toast.makeText(activity, "Failed to read username: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
         });
     }
 
+
+    public static void loadNews(int requiredCategory, List<NewsItem> targetList, Context context, NewsAdapter adapter, Runnable onLoaded) {
+        DatabaseReference newsRef = FirebaseDatabase.getInstance().getReference("News");
+
+        Log.i("DATA_FIRE", "RUNING");
+
+        newsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                targetList.clear();
+                Log.i("DATA_FIRE", "ON Changed");
+                for (DataSnapshot newsSnap : snapshot.getChildren()) {
+                    try {
+                        String title = newsSnap.child("title").getValue(String.class);
+                        String content = newsSnap.child("content").getValue(String.class);
+                        int category = newsSnap.child("category").getValue(Integer.class);
+                        String image_location = newsSnap.child("image").getValue(String.class);
+                        String timestamp = newsSnap.getKey();
+                        int category_icon;
+
+
+                        if (category == requiredCategory) {
+                            if (category == 0){
+                                category_icon = R.drawable.ic_academic;
+                            } else if (category == 1) {
+                                category_icon = R.drawable.ic_events;
+                            }else{
+                                category_icon = R.drawable.ic_sports;
+                            }
+                            NewsItem item = new NewsItem(title, content, timestamp,category_icon, image_location);
+                            targetList.add(item);
+                        } else if (requiredCategory==100) {
+
+                            if (category == 0){
+                                category_icon = R.drawable.ic_academic;
+                            } else if (category == 1) {
+                                category_icon = R.drawable.ic_events;
+                            }else{
+                                category_icon = R.drawable.ic_sports;
+                            }
+                            NewsItem item = new NewsItem(title, content, timestamp,category_icon, image_location);
+                            targetList.add(item);
+                        }
+
+                    } catch (Exception e) {
+                        onLoaded.run();
+                        e.printStackTrace();
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                onLoaded.run();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", error.getMessage());
+                onLoaded.run();
+            }
+        });
+    }
 
 }

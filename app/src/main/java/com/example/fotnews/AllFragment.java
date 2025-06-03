@@ -13,15 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventsFragment extends Fragment {
-    public EventsFragment() {
-// Required empty public constructor
+public class AllFragment extends Fragment {
+    public AllFragment() {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
-
         LinearLayout progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
@@ -32,11 +30,13 @@ public class EventsFragment extends Fragment {
         NewsAdapter adapter = new NewsAdapter(getContext(), sampleData);
         recyclerView.setAdapter(adapter);
 
-        FirebaseHelper.loadNews(1, sampleData, getContext(), adapter, () -> {
-            // ✅ Only hide after loading
+        FirebaseHelper.loadNews(100, sampleData, getContext(), adapter, () -> {
             progressBar.setVisibility(View.GONE);
         });
 
+
         return view;
+
+
     }
 }

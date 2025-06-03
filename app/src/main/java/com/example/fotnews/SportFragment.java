@@ -4,16 +4,38 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SportFragment extends Fragment {
     public SportFragment() {
-// Required empty public constructor
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sport, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_news, container, false);
+
+        LinearLayout progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
+        RecyclerView recyclerView = view.findViewById(R.id.newsRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        List<NewsItem> sampleData = new ArrayList<>();
+        NewsAdapter adapter = new NewsAdapter(getContext(), sampleData);
+        recyclerView.setAdapter(adapter);
+
+        FirebaseHelper.loadNews(2, sampleData, getContext(), adapter, () -> {
+            progressBar.setVisibility(View.GONE);
+        });
+
+        return view;
     }
 }

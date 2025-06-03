@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
-import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -39,21 +38,20 @@ public class FeedActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.nav_sport) {
-                Toast.makeText(this, "Sport clicked", Toast.LENGTH_SHORT).show();
+            if (id == R.id.nav_all) {
+                return true;
+            }else if (id == R.id.nav_sport) {
                 return true;
             } else if (id == R.id.nav_academic) {
-                Toast.makeText(this, "Academic clicked", Toast.LENGTH_SHORT).show();
                 return true;
             } else if (id == R.id.nav_event) {
-                Toast.makeText(this, "Events clicked", Toast.LENGTH_SHORT).show();
                 return true;
             }
             return false;
         });
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new SportFragment())
+                .replace(R.id.fragment_container, new AllFragment())
                 .commit();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -66,6 +64,8 @@ public class FeedActivity extends AppCompatActivity {
                 selectedFragment = new AcademicFragment();
             } else if (itemId == R.id.nav_event) {
                 selectedFragment = new EventsFragment();
+            }else if (itemId == R.id.nav_all){
+                selectedFragment = new AllFragment();
             }
 
             if (selectedFragment != null) {

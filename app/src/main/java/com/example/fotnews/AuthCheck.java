@@ -2,6 +2,7 @@ package com.example.fotnews;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -25,7 +26,19 @@ public class AuthCheck {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
+
+
         if (currentUser != null) {
+
+            currentUser.getIdToken(true).addOnCompleteListener(task2 -> {
+                if (task2.isSuccessful()) {
+                    String idToken = task2.getResult().getToken();
+                    Log.d("FIREBASE_ID_TOKEN", "Token: " + idToken);
+                } else {
+                    Log.e("FIREBASE_ID_TOKEN", "Error getting token", task2.getException());
+                }
+            });
+
             String email = currentUser.getEmail();
             Toast.makeText(activity, "Logged in as: " + email, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(activity, FeedActivity.class);

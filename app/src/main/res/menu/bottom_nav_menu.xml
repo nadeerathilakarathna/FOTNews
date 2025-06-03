@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/nav_all"
+        android:icon="@drawable/ic_all"
+        android:title="All" />
+
+    <item
         android:id="@+id/nav_sport"
         android:icon="@drawable/ic_sports"
         android:title="Sport" />

@@ -1,5 +1,6 @@
 package com.example.fotnews;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Patterns;
@@ -55,7 +56,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void loginUser(String email, String password) {
+    private void loginUser(String email, String password, Runnable progressbar_start_loader, Runnable progressbar_stop_loader) {
+        progressbar_start_loader.run();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -63,8 +65,10 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(LoginActivity.this, FeedActivity.class);
                         startActivity(intent);
                         finish();
+                        progressbar_stop_loader.run();
 
                     } else {
+                        progressbar_stop_loader.run();
                         Exception e = task.getException();
                         if (e != null) {
                             handleLoginError(e);
@@ -74,13 +78,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void sendPasswordReset(String email,LinearLayout alert_reset_password) {
+    public void sendPasswordReset(String email,LinearLayout alert_reset_password, Runnable progressbar_start_loader, Runnable progressbar_stop_loader) {
+        progressbar_start_loader.run();
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), "Password reset email sent", Toast.LENGTH_SHORT).show();
                         alert_reset_password.setVisibility(View.GONE);
+                        progressbar_stop_loader.run();
                     } else {
+                        progressbar_stop_loader.run();
                         Exception e = task.getException();
                         if (e != null) {
                             handleResetError(e);
@@ -98,6 +105,17 @@ public class LoginActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_login);
 
+        LinearLayout progressBar = findViewById(R.id.progressBar);
+        progressBar.setBackgroundColor(Color.parseColor("#80000000"));
+
+        Runnable progressbar_start_loader = () -> {
+            progressBar.setVisibility(View.VISIBLE);
+        };
+
+        Runnable progressbar_stop_loader = () -> {
+            progressBar.setVisibility(View.GONE);
+        };
+
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
         Button loginButton = findViewById(R.id.loginButton);
@@ -114,35 +132,37 @@ public class LoginActivity extends AppCompatActivity {
         forgotText.setText(Html.fromHtml("<u>Forgot Password?</u>"));
         signinText.setText(Html.fromHtml("You haven’t Account yet: <span style=\"color:#607df3\";>SIGN UP</span>"));
 
+
+
         loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                                               String username = usernameEditText.getText().toString();
-                                               String password = passwordEditText.getText().toString();
+                String username = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
 
-                                               if (username.isEmpty()) {
-                                                   Toast.makeText(LoginActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
-                                                   return;
-                                               }
+                if (username.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                                               if (!Patterns.EMAIL_ADDRESS.matcher(username).matches()) {
-                                                   Toast.makeText(LoginActivity.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
-                                                   return;
-                                               }
+                if (!Patterns.EMAIL_ADDRESS.matcher(username).matches()) {
+                    Toast.makeText(LoginActivity.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                                               if (password.isEmpty()) {
-                                                   Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
-                                                   return;
-                                               }
+                if (password.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                                               if (password.length() < 8) {
-                                                   Toast.makeText(LoginActivity.this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
-                                                   return;
-                                               }
+                if (password.length() < 8) {
+                    Toast.makeText(LoginActivity.this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                                               loginUser(username, password);
-                                           }
+                loginUser(username, password, progressbar_start_loader, progressbar_stop_loader);
+            }
 
         });
 
@@ -176,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (edittext_reset_email.getText().toString().isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Enter your email", Toast.LENGTH_SHORT).show();
                 } else {
-                    sendPasswordReset(edittext_reset_email.getText().toString(),alert_reset_password);
+                    sendPasswordReset(edittext_reset_email.getText().toString(),alert_reset_password,progressbar_start_loader,progressbar_stop_loader);
                 }
 
 

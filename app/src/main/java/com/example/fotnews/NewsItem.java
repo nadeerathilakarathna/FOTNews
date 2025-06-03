@@ -3,15 +3,15 @@ package com.example.fotnews;
 public class NewsItem {
     String title;
     String content;
-    long timestamp; // in millis
+    String timestamp; // in millis
     int category;
-    int imageResId;
+    String image_url;
 
-    public NewsItem(String title, String content, long timestamp, int category,  int imageResId) {
+    public NewsItem(String title, String content, String timestamp, int category,  String image_url) {
         this.title = title;
         this.content = content;
         this.timestamp = timestamp;
         this.category = category;
-        this.imageResId = imageResId;
+        this.image_url = image_url;
     }
 }

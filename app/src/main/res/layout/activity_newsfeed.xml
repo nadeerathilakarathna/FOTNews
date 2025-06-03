@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -12,8 +12,8 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/color_primary"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:title="NEWS FEED"
@@ -21,73 +21,42 @@
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_menu"
         app:navigationContentDescription="Settings"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
-    <LinearLayout
-        android:id="@+id/Hello"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollable_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="56dp"
-        android:orientation="vertical"
-        android:scrollbars="vertical"
-        >
+        android:layout_height="wrap_content" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:id="@+id/fragment_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    />
-
-<!--                <ImageView-->
-<!--                    android:layout_width="300dp"-->
-<!--                    android:layout_height="300dp"-->
-<!--                    android:src="@drawable/full_logo"/>-->
-
-<!--                <ImageView-->
-<!--                    android:layout_width="300dp"-->
-<!--                    android:layout_height="300dp"-->
-<!--                    android:src="@drawable/full_logo"/>-->
-
-<!--                <ImageView-->
-<!--                    android:layout_width="300dp"-->
-<!--                    android:layout_height="300dp"-->
-<!--                    android:src="@drawable/full_logo"/>-->
-
-            </LinearLayout>
-        </ScrollView>
-
-
-
-
-    </LinearLayout>
-
+    </androidx.core.widget.NestedScrollView>
 
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/color_primary"
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
         app:menu="@menu/bottom_nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
 
@@ -95,5 +64,5 @@
 
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
