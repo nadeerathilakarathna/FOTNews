@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,15 +19,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public class FirebaseHelper {
-
-
 
 
     public static void registerUser(String name, String email, String password, Activity activity, Runnable progressbar_start_loader, Runnable progressbar_stop_loader) {
@@ -38,36 +36,34 @@ public class FirebaseHelper {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users");
 
 
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity, task -> {
-                    if (task.isSuccessful()) {
-                        String uid = mAuth.getCurrentUser().getUid();
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(activity, task -> {
+            if (task.isSuccessful()) {
+                String uid = mAuth.getCurrentUser().getUid();
 
-                        // 🔥 Create user object
-                        HashMap<String, String> userMap = new HashMap<>();
-                        userMap.put("name", name);
-                        userMap.put("email", email);
-                        userMap.put("uid", uid);
+                // 🔥 Create user object
+                HashMap<String, String> userMap = new HashMap<>();
+                userMap.put("name", name);
+                userMap.put("email", email);
+                userMap.put("uid", uid);
 
-                        // 🧠 Save to Firebase Realtime DB
-                        dbRef.child(uid).setValue(userMap)
-                                .addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()) {
-                                        Toast.makeText(activity, "Registration Successful", Toast.LENGTH_SHORT).show();
-                                        progressbar_stop_loader.run();
-                                        Intent intent = new Intent(activity, FeedActivity.class);
-                                        activity.startActivity(intent);
-                                        activity.finish();
-                                    } else {
-                                        progressbar_stop_loader.run();
-                                        handleLoginError(task1.getException(), activity);
-                                    }
-                                });
+                // 🧠 Save to Firebase Realtime DB
+                dbRef.child(uid).setValue(userMap).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        Toast.makeText(activity, "Registration Successful", Toast.LENGTH_SHORT).show();
+                        progressbar_stop_loader.run();
+                        Intent intent = new Intent(activity, FeedActivity.class);
+                        activity.startActivity(intent);
+                        activity.finish();
                     } else {
                         progressbar_stop_loader.run();
-                        handleLoginError(task.getException(), activity);
+                        handleLoginError(task1.getException(), activity);
                     }
                 });
+            } else {
+                progressbar_stop_loader.run();
+                handleLoginError(task.getException(), activity);
+            }
+        });
     }
 
     public static void handleLoginError(Exception e, Context context) {
@@ -87,15 +83,10 @@ public class FirebaseHelper {
     }
 
 
+    public static void getUserDetails(Activity activity, InterfaceHelper.OnUserDetailsReceived callback, Runnable onLoaded) {
 
-
-
-    public static void getUserDetails(Activity activity, TextView nameView, TextView emailView, TextInputEditText edit_name, TextInputEditText edit_email, TextInputEditText edit_oldpassword, TextInputEditText edit_newpassword, TextInputEditText edit_confirmpassword, Runnable onLoaded ) {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference dbRef = FirebaseDatabase
-                .getInstance()
-                .getReference("users")
-                .child(uid);
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(uid);
 
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -105,10 +96,7 @@ public class FirebaseHelper {
                     String email = snapshot.child("email").getValue(String.class);
 
 
-                    nameView.setText(name);
-                    emailView.setText(email);
-                    edit_name.setText(name);
-                    edit_email.setText(email);
+                    callback.onReceived(name, email);
                     onLoaded.run();
 
 
@@ -126,7 +114,8 @@ public class FirebaseHelper {
             }
         });
     }
-    public static void updateUserProfile(Activity activity, String newUsername, String oldPassword, String newPassword,Runnable progressOnLoaded, Runnable onSuccess) {
+
+    public static void updateUserProfile(Activity activity, String newUsername, String oldPassword, String newPassword, InterfaceHelper.onUserDetailsUpdated callback, Runnable progressOnLoaded, Runnable onSuccess) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) return;
@@ -143,46 +132,43 @@ public class FirebaseHelper {
             boolean needsPasswordUpdate = !oldPassword.isEmpty() && !newPassword.isEmpty();
 
             if (needsUsernameUpdate) {
-                userRef.child("name").setValue(newUsername)
-                        .addOnSuccessListener(unused -> {
-                            Toast.makeText(activity, "Username updated successfully", Toast.LENGTH_SHORT).show();
-                            if (!needsPasswordUpdate) {
-                                onSuccess.run(); // Only username changed
-                                progressOnLoaded.run();
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(activity, "Username update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            progressOnLoaded.run();
-                        });
+                userRef.child("name").setValue(newUsername).addOnSuccessListener(unused -> {
+                    Toast.makeText(activity, "Username updated successfully", Toast.LENGTH_SHORT).show();
+                    if (!needsPasswordUpdate) {
+                        onSuccess.run(); // Only username changed
+                        progressOnLoaded.run();
+                        callback.onUpdated();
+                    }
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(activity, "Username update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressOnLoaded.run();
+                });
             }
 
             if (!oldPassword.isEmpty()) {
                 AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassword);
-                user.reauthenticate(credential)
-                        .addOnSuccessListener(authResult -> {
-                            if (!newPassword.isEmpty()) {
-                                user.updatePassword(newPassword)
-                                        .addOnSuccessListener(unused -> {
-                                            Toast.makeText(activity, "Password updated successfully", Toast.LENGTH_SHORT).show();
-                                            if (!needsUsernameUpdate) {
-                                                onSuccess.run(); // Only password changed
-                                                progressOnLoaded.run();
-                                            } else if (needsUsernameUpdate) {
-                                                onSuccess.run(); // Both done
-                                                progressOnLoaded.run();
-                                            }
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            progressOnLoaded.run();
-                                            Toast.makeText(activity, "Password update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        });
+                user.reauthenticate(credential).addOnSuccessListener(authResult -> {
+                    if (!newPassword.isEmpty()) {
+                        user.updatePassword(newPassword).addOnSuccessListener(unused -> {
+                            Toast.makeText(activity, "Password updated successfully", Toast.LENGTH_SHORT).show();
+                            if (!needsUsernameUpdate) {
+                                onSuccess.run(); // Only password changed
+                                progressOnLoaded.run();
+                                callback.onUpdated();
+                            } else if (needsUsernameUpdate) {
+                                onSuccess.run(); // Both done
+                                progressOnLoaded.run();
+                                callback.onUpdated();
                             }
-                        })
-                        .addOnFailureListener(e -> {
+                        }).addOnFailureListener(e -> {
                             progressOnLoaded.run();
-                            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "Password update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
+                    }
+                }).addOnFailureListener(e -> {
+                    progressOnLoaded.run();
+                    Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
 
             // If no username or password update needed
@@ -198,18 +184,17 @@ public class FirebaseHelper {
         });
     }
 
-
     public static void loadNews(int requiredCategory, List<NewsItem> targetList, Context context, NewsAdapter adapter, Runnable onLoaded) {
-        DatabaseReference newsRef = FirebaseDatabase.getInstance().getReference("News");
+        Query newsRef = FirebaseDatabase.getInstance()
+                .getReference("News")
+                .orderByKey();
 
-        Log.i("DATA_FIRE", "RUNING");
 
         newsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 targetList.clear();
-                Log.i("DATA_FIRE", "ON Changed");
-                for (DataSnapshot newsSnap : snapshot.getChildren()) {
+                                for (DataSnapshot newsSnap : snapshot.getChildren()) {
                     try {
                         String title = newsSnap.child("title").getValue(String.class);
                         String content = newsSnap.child("content").getValue(String.class);
@@ -220,25 +205,25 @@ public class FirebaseHelper {
 
 
                         if (category == requiredCategory) {
-                            if (category == 0){
+                            if (category == 0) {
                                 category_icon = R.drawable.ic_academic;
                             } else if (category == 1) {
                                 category_icon = R.drawable.ic_events;
-                            }else{
+                            } else {
                                 category_icon = R.drawable.ic_sports;
                             }
-                            NewsItem item = new NewsItem(title, content, timestamp,category_icon, image_location);
+                            NewsItem item = new NewsItem(title, content, timestamp, category_icon, image_location);
                             targetList.add(item);
-                        } else if (requiredCategory==100) {
+                        } else if (requiredCategory == 100) {
 
-                            if (category == 0){
+                            if (category == 0) {
                                 category_icon = R.drawable.ic_academic;
                             } else if (category == 1) {
                                 category_icon = R.drawable.ic_events;
-                            }else{
+                            } else {
                                 category_icon = R.drawable.ic_sports;
                             }
-                            NewsItem item = new NewsItem(title, content, timestamp,category_icon, image_location);
+                            NewsItem item = new NewsItem(title, content, timestamp, category_icon, image_location);
                             targetList.add(item);
                         }
 
@@ -247,14 +232,14 @@ public class FirebaseHelper {
                         e.printStackTrace();
                     }
                 }
+                Collections.reverse(targetList);
                 adapter.notifyDataSetChanged();
                 onLoaded.run();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("FirebaseError", error.getMessage());
-                onLoaded.run();
+                                onLoaded.run();
             }
         });
     }

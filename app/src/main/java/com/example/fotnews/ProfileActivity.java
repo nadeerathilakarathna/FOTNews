@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowInsets;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,8 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
@@ -27,7 +24,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-    private void logoutUser(LinearLayout alert_background,CoordinatorLayout alert_logout, Runnable onLoaded) {
+    private void logoutUser(LinearLayout alert_background, CoordinatorLayout alert_logout, Runnable onLoaded) {
         FirebaseAuth.getInstance().signOut();
         alert_background.setVisibility(View.GONE);
         alert_logout.setVisibility(View.GONE);
@@ -45,16 +42,19 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AuthCheck.redirectLogin(this);
+
+        UiHelper.setStatusBarandNavigationBarColor(ProfileActivity.this, R.color.color_primary, R.color.color_primary);
         setContentView(R.layout.activity_profile);
+
 
         LinearLayout progressBar = findViewById(R.id.progressBar);
         progressBar.setBackgroundColor(Color.parseColor("#80000000"));
         progressBar.setVisibility(View.VISIBLE);
 
 
-
         MaterialToolbar profileAppBar = findViewById(R.id.profileappbar);
         setSupportActionBar(profileAppBar);
+        UiHelper.setStatusBarPadding(ProfileActivity.this, profileAppBar);
 
         TextView txt_username = findViewById(R.id.user_name);
         TextView txt_useremail = findViewById(R.id.user_email);
@@ -65,12 +65,18 @@ public class ProfileActivity extends AppCompatActivity {
         TextInputEditText inp_cpassword = findViewById(R.id.edit_cpassword);
         TextInputEditText inp_oldpassword = findViewById(R.id.edit_oldpassword);
 
-        Log.d("ProfileActivity", "Before getting user details 1");
-        FirebaseHelper.getUserDetails(ProfileActivity.this, txt_username, txt_useremail,inp_username,inp_email,inp_oldpassword,inp_password,inp_cpassword, () -> {
-            progressBar.setVisibility(View.GONE);
-        });
-        Log.d("ProfileActivity", "After getting user details 2");
+        Runnable progressbar_stop_loader = RunnableHelper.progressbar_stop_loader(progressBar);
 
+        FirebaseHelper.getUserDetails(ProfileActivity.this, new InterfaceHelper.OnUserDetailsReceived() {
+            @Override
+            public void onReceived(String username, String email) {
+                txt_username.setText(username);
+                txt_useremail.setText(email);
+                inp_email.setText(email);
+                inp_username.setText(username);
+            }
+
+        }, progressbar_stop_loader);
 
 
         profileAppBar.setNavigationOnClickListener(view -> {
@@ -78,22 +84,6 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
-
-        View rootView = findViewById(R.id.rootView);
-
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-            Insets bars = insets.getInsets(WindowInsets.Type.systemBars()); // Status + nav bar
-
-            // Apply top and bottom padding to leave space
-            v.setPadding(0, bars.top, 0, bars.bottom);
-            return insets;
-        });
-
-
-
-
-
 
 
         MaterialButton btn_edit_profile = findViewById(R.id.btn_edit_profile);
@@ -113,6 +103,8 @@ public class ProfileActivity extends AppCompatActivity {
         alert_logout.setVisibility(View.GONE);
 
 
+        Runnable close_edit_box_loader = RunnableHelper.close_edit_box_loader(alert_background,alert_edit_profile);
+
 
         btn_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,13 +120,16 @@ public class ProfileActivity extends AppCompatActivity {
         btn_close_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ProfileActivity", "Before getting user details 3");
-                FirebaseHelper.getUserDetails(ProfileActivity.this, txt_username, txt_useremail,inp_username,inp_email,inp_oldpassword,inp_password,inp_cpassword, () -> {
+                FirebaseHelper.getUserDetails(ProfileActivity.this, new InterfaceHelper.OnUserDetailsReceived() {
+                    @Override
+                    public void onReceived(String username, String email) {
+                        txt_username.setText(username);
+                        txt_useremail.setText(email);
+                        inp_email.setText(email);
+                        inp_username.setText(username);
+                    }
 
-                    progressBar.setVisibility(View.GONE);
-                });
-
-                Log.d("ProfileActivity", "Before getting user details 4");
+                }, progressbar_stop_loader);
                 alert_background.setVisibility(View.GONE);
                 alert_edit_profile.setVisibility(View.GONE);
 
@@ -175,16 +170,33 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
 
-            Runnable progress_loader = () -> {
-                progressBar.setVisibility(View.GONE);
-            };
-
 
             progressBar.setVisibility(View.VISIBLE);
-            FirebaseHelper.updateUserProfile(ProfileActivity.this, newUsername, oldPassword, newPassword, progress_loader, () -> {
-                alert_background.setVisibility(View.GONE);
-                alert_edit_profile.setVisibility(View.GONE);
-            });
+            FirebaseHelper.updateUserProfile(ProfileActivity.this, newUsername, oldPassword, newPassword, new InterfaceHelper.onUserDetailsUpdated() {
+                @Override
+                public void onUpdated() {
+                    FirebaseHelper.getUserDetails(ProfileActivity.this, new InterfaceHelper.OnUserDetailsReceived() {
+                        @Override
+                        public void onReceived(String username, String email) {
+                            txt_username.setText(username);
+                            txt_useremail.setText(email);
+                            inp_email.setText(email);
+                            inp_username.setText(username);
+                        }
+                    }, progressbar_stop_loader);
+                }
+            }, progressbar_stop_loader, close_edit_box_loader);
+                        FirebaseHelper.getUserDetails(ProfileActivity.this, new InterfaceHelper.OnUserDetailsReceived() {
+                @Override
+                public void onReceived(String username, String email) {
+                    txt_username.setText(username);
+                    txt_useremail.setText(email);
+                    inp_email.setText(email);
+                    inp_username.setText(username);
+                }
+
+            }, progressbar_stop_loader);
+
         });
 
         btn_edit_profile_cancel.setOnClickListener(new View.OnClickListener() {
@@ -217,7 +229,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setBackgroundColor(Color.parseColor("#80000000"));
-                logoutUser(alert_background,alert_logout, () -> {
+                logoutUser(alert_background, alert_logout, () -> {
                     progressBar.setVisibility(View.GONE);
                 });
             }
@@ -230,9 +242,6 @@ public class ProfileActivity extends AppCompatActivity {
                 alert_logout.setVisibility(View.GONE);
             }
         });
-
-
-
 
 
     }

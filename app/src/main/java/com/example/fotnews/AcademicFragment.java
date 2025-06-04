@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class AcademicFragment extends Fragment {
     public AcademicFragment() {
-// Required empty public constructor
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,9 +31,7 @@ public class AcademicFragment extends Fragment {
         NewsAdapter adapter = new NewsAdapter(getContext(), sampleData);
         recyclerView.setAdapter(adapter);
 
-        FirebaseHelper.loadNews(0, sampleData, getContext(), adapter, () -> {
-            progressBar.setVisibility(View.GONE);
-        });
+        FirebaseHelper.loadNews(0, sampleData, getContext(), adapter,RunnableHelper.progressbar_stop_loader(progressBar));
 
 
         return view;

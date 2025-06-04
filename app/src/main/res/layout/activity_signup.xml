@@ -3,22 +3,51 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_splash">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/image_circle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/bg_auth_circle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:paddingTop="15dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:src="@drawable/full_logo"
+            app:layout_constraintTop_toTopOf="@id/image_circle"
+            app:layout_constraintBottom_toBottomOf="@id/image_circle"
+            app:layout_constraintStart_toStartOf="@id/image_circle"
+            app:layout_constraintEnd_toEndOf="@id/image_circle" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 <LinearLayout
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
     android:padding="24dp"
-    android:background="@drawable/bg_login"
-
+    android:layout_marginBottom="10dp"
     >
 
 
     <LinearLayout
-        android:paddingTop="30dp"
+        android:paddingTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -117,6 +146,7 @@
         android:text="Already have an Account: Log In"
         android:textColor="@color/color_primary"
         android:layout_gravity="center_horizontal"
+
         android:autoLink="none"
         android:clickable="true"
         android:textStyle="bold"

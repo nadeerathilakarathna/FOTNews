@@ -16,9 +16,9 @@ import java.util.List;
 public class SportFragment extends Fragment {
     public SportFragment() {
     }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_news, container, false);
 
@@ -32,9 +32,7 @@ public class SportFragment extends Fragment {
         NewsAdapter adapter = new NewsAdapter(getContext(), sampleData);
         recyclerView.setAdapter(adapter);
 
-        FirebaseHelper.loadNews(2, sampleData, getContext(), adapter, () -> {
-            progressBar.setVisibility(View.GONE);
-        });
+        FirebaseHelper.loadNews(2, sampleData, getContext(), adapter,RunnableHelper.progressbar_stop_loader(progressBar));
 
         return view;
     }

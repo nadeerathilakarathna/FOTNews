@@ -11,21 +11,16 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class SignupActivity extends AppCompatActivity {
-    private EditText edit_name,edit_email,edit_password, edit_cpassword;
+    private EditText edit_name, edit_email, edit_password, edit_cpassword;
     private String name, email, password, cpassword;
     private Button btn_signup;
-
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
 
 
     @Override
@@ -34,24 +29,16 @@ public class SignupActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
 
         AuthCheck.redirectFeed(this);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
 
-
-
+        UiHelper.setStatusBarandNavigationBarColor(SignupActivity.this, R.color.color_primary, R.color.color_primary);
         setContentView(R.layout.activity_signup);
+
 
         LinearLayout progressBar = findViewById(R.id.progressBar);
         progressBar.setBackgroundColor(Color.parseColor("#80000000"));
 
-        Runnable progressbar_start_loader = () -> {
-            progressBar.setVisibility(View.VISIBLE);
-        };
-
-        Runnable progressbar_stop_loader = () -> {
-            progressBar.setVisibility(View.GONE);
-        };
+        Runnable progressbar_start_loader = RunnableHelper.progressbar_start_loader(progressBar);
+        Runnable progressbar_stop_loader = RunnableHelper.progressbar_stop_loader(progressBar);
 
         edit_name = findViewById(R.id.name);
         edit_email = findViewById(R.id.email);
@@ -63,7 +50,6 @@ public class SignupActivity extends AppCompatActivity {
         email = edit_email.toString().trim();
         password = edit_password.toString().trim();
         cpassword = edit_cpassword.toString().trim();
-
 
 
         btn_signup.setOnClickListener(new View.OnClickListener() {
@@ -106,26 +92,17 @@ public class SignupActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
-
-
         TextView loginText = findViewById(R.id.tvNavigateSignup);
 
         loginText.setText(Html.fromHtml("Already have an Account: <span style=\"color:#607df3\";>LOG IN</span>"));
-        loginText.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-        );
-
+        loginText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 
     }

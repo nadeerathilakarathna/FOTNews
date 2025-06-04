@@ -3,16 +3,15 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardElevation="4dp"
+    android:layout_margin="4dp"
     card_view:cardCornerRadius="8dp"
-    android:layout_margin="8dp">
+    card_view:cardElevation="4dp">
 
     <LinearLayout
-        android:padding="8dp"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
 
         <ImageView
@@ -23,62 +22,58 @@
             android:scaleType="centerCrop"
             android:src="@drawable/example_news" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:paddingLeft="5dp"
-        android:layout_width="270dp"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/newsTitle"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:text="Sample Title"
-            android:layout_marginTop="0dp"
-            android:textColor="@color/black"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:minHeight="70dp"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginEnd="25dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="5dp">
+
+                <TextView
+                    android:id="@+id/newsTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="Sample Title"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/newsContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:justificationMode="inter_word"
+                    android:text="Short news content here..."
+                    android:textSize="16sp" />
+            </LinearLayout>
 
 
-
-        <TextView
-            android:id="@+id/newsContent"
-            android:textSize="14sp"
-            android:text="Short news content here..."
-            android:layout_marginTop="6dp"
-            android:justificationMode="inter_word"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/newsTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:text="5h"
+                android:textColor="@color/color_primary"
+                android:textSize="14sp" />
 
 
-        <TextView
-            android:id="@+id/newsTime"
-            android:textSize="12sp"
-            android:layout_marginTop="8dp"
-            android:text="5h"
-            android:textColor="@color/color_primary"
-            android:layout_gravity="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/newsCategory"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:src="@drawable/ic_sports"
+                android:tint="@color/color_primary" />
 
 
-        <ImageView
-            android:id="@+id/newsCategory"
-            android:paddingTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_sports"
-            android:layout_gravity="end"
-            android:tint="@color/color_primary"
-            />
-
-    </LinearLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
     </LinearLayout>

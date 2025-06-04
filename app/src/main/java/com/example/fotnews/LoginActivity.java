@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void sendPasswordReset(String email,LinearLayout alert_reset_password, Runnable progressbar_start_loader, Runnable progressbar_stop_loader) {
+    public void sendPasswordReset(String email, LinearLayout alert_reset_password, Runnable progressbar_start_loader, Runnable progressbar_stop_loader) {
         progressbar_start_loader.run();
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
@@ -100,21 +100,17 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AuthCheck.redirectFeed(this);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+
+
+        UiHelper.setStatusBarandNavigationBarColor(LoginActivity.this, R.color.color_primary, R.color.color_primary);
         setContentView(R.layout.activity_login);
 
         LinearLayout progressBar = findViewById(R.id.progressBar);
         progressBar.setBackgroundColor(Color.parseColor("#80000000"));
 
-        Runnable progressbar_start_loader = () -> {
-            progressBar.setVisibility(View.VISIBLE);
-        };
+        Runnable progressbar_start_loader = RunnableHelper.progressbar_start_loader(progressBar);
+        Runnable progressbar_stop_loader = RunnableHelper.progressbar_stop_loader(progressBar);
 
-        Runnable progressbar_stop_loader = () -> {
-            progressBar.setVisibility(View.GONE);
-        };
 
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
@@ -128,10 +124,8 @@ public class LoginActivity extends AppCompatActivity {
         EditText edittext_reset_email = findViewById(R.id.reset_email);
 
 
-        // Make text underlined
         forgotText.setText(Html.fromHtml("<u>Forgot Password?</u>"));
         signinText.setText(Html.fromHtml("You haven’t Account yet: <span style=\"color:#607df3\";>SIGN UP</span>"));
-
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -196,9 +190,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (edittext_reset_email.getText().toString().isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Enter your email", Toast.LENGTH_SHORT).show();
                 } else {
-                    sendPasswordReset(edittext_reset_email.getText().toString(),alert_reset_password,progressbar_start_loader,progressbar_stop_loader);
+                    sendPasswordReset(edittext_reset_email.getText().toString(), alert_reset_password, progressbar_start_loader, progressbar_stop_loader);
                 }
-
 
 
             }

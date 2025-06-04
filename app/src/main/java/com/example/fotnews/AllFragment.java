@@ -30,9 +30,7 @@ public class AllFragment extends Fragment {
         NewsAdapter adapter = new NewsAdapter(getContext(), sampleData);
         recyclerView.setAdapter(adapter);
 
-        FirebaseHelper.loadNews(100, sampleData, getContext(), adapter, () -> {
-            progressBar.setVisibility(View.GONE);
-        });
+        FirebaseHelper.loadNews(100, sampleData, getContext(), adapter,RunnableHelper.progressbar_stop_loader(progressBar));
 
 
         return view;

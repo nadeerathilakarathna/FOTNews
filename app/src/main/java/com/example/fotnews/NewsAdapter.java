@@ -12,8 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-
+import java.util.Locale;
 
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
@@ -21,29 +24,42 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     private Context context;
     private List<NewsItem> newsList;
 
+    public static long convertFormattedToMillis(String formattedTime) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+            Date date = sdf.parse(formattedTime);
+            return date != null ? date.getTime() : 0;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     public static String getCustomRelativeTime(String unixTimestampStr) {
         try {
-            long pastTimeMillis = Long.parseLong(unixTimestampStr) * 1000L;
+
+
+            long pastTimeMillis = convertFormattedToMillis(unixTimestampStr);
             long now = System.currentTimeMillis();
             long diff = now - pastTimeMillis;
 
             long seconds = diff / 1000;
             long minutes = seconds / 60;
-            long hours   = minutes / 60;
-            long days    = hours / 24;
-            long months  = days / 30;
-            long years   = days / 365;
+            long hours = minutes / 60;
+            long days = hours / 24;
+            long months = days / 30;
+            long years = days / 365;
 
             if (seconds < 60) {
                 return seconds + "s";
             } else if (minutes < 60) {
-                return minutes + "min";
+                return minutes + " min";
             } else if (hours < 24) {
                 return hours + "h";
             } else if (days < 30) {
                 return days + "d";
             } else if (months < 12) {
-                return months + "mo";
+                return months + " mo";
             } else {
                 return years + "y";
             }
@@ -74,11 +90,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         String relativeTime = getCustomRelativeTime(item.timestamp);
         holder.time.setText(relativeTime);
 
-        Glide.with(context)
-                .load(item.image_url)
-                .placeholder(R.drawable.example_news)
-                .error(R.drawable.example_news)
-                .into(holder.image);
+        Glide.with(context).load(item.image_url).placeholder(R.drawable.example_news).error(R.drawable.example_news).into(holder.image);
     }
 
     @Override

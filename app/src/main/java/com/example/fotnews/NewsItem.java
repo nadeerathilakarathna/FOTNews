@@ -7,7 +7,7 @@ public class NewsItem {
     int category;
     String image_url;
 
-    public NewsItem(String title, String content, String timestamp, int category,  String image_url) {
+    public NewsItem(String title, String content, String timestamp, int category, String image_url) {
         this.title = title;
         this.content = content;
         this.timestamp = timestamp;

@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowInsets;
+
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -24,23 +22,25 @@ public class FeedActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AuthCheck.redirectLogin(this);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
 
 
+        UiHelper.setStatusBarandNavigationBarColor(FeedActivity.this, R.color.color_primary, R.color.color_primary);
 
 
         setContentView(R.layout.activity_newsfeed);
         topAppBars = findViewById(R.id.topAppBar);
 
+        UiHelper.setStatusBarPadding(FeedActivity.this, topAppBars);
+
+
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(item -> {
+
             int id = item.getItemId();
 
             if (id == R.id.nav_all) {
                 return true;
-            }else if (id == R.id.nav_sport) {
+            } else if (id == R.id.nav_sport) {
                 return true;
             } else if (id == R.id.nav_academic) {
                 return true;
@@ -50,9 +50,8 @@ public class FeedActivity extends AppCompatActivity {
             return false;
         });
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new AllFragment())
-                .commit();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AllFragment()).commit();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
@@ -64,14 +63,12 @@ public class FeedActivity extends AppCompatActivity {
                 selectedFragment = new AcademicFragment();
             } else if (itemId == R.id.nav_event) {
                 selectedFragment = new EventsFragment();
-            }else if (itemId == R.id.nav_all){
+            } else if (itemId == R.id.nav_all) {
                 selectedFragment = new AllFragment();
             }
 
             if (selectedFragment != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
-                        .commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
             }
 
             return true;
@@ -82,7 +79,6 @@ public class FeedActivity extends AppCompatActivity {
         topAppBars.inflateMenu(R.menu.feed_top_menu);
 
 
-
         topAppBars.setNavigationOnClickListener(view -> {
             Intent intent = new Intent(FeedActivity.this, DeveloperActivity.class);
             startActivity(intent);
@@ -90,22 +86,7 @@ public class FeedActivity extends AppCompatActivity {
         });
 
 
-
-
-        View rootView = findViewById(R.id.rootView);
-
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-            Insets bars = insets.getInsets(WindowInsets.Type.systemBars()); // Status + nav bar
-
-            // Apply top and bottom padding to leave space
-            v.setPadding(0, bars.top, 0, 0);
-            return insets;
-        });
-
-
-
     }
-
 
 
     @Override
@@ -115,8 +96,8 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId()== R.id.menu_profile){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_profile) {
             Intent intent = new Intent(FeedActivity.this, ProfileActivity.class);
             startActivity(intent);
             finish();
@@ -124,8 +105,6 @@ public class FeedActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
 
 }
