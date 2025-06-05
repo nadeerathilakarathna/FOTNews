@@ -40,7 +40,7 @@ public class AuthCheck {
             });
 
             String email = currentUser.getEmail();
-            Toast.makeText(activity, "Logged in as: " + email, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Logged in as: \n" + email, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(activity, FeedActivity.class);
             activity.startActivity(intent);
             activity.finish();

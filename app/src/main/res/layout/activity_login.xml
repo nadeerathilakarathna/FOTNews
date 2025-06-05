@@ -21,9 +21,10 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
-            android:paddingTop="15dp"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:paddingTop="30dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/full_logo"
             app:layout_constraintTop_toTopOf="@id/image_circle"
             app:layout_constraintBottom_toBottomOf="@id/image_circle"
