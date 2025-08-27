@@ -80,7 +80,9 @@ You’ll be asked to confirm before being redirected to the Login screen.
 ### 9. Forgot Password
 If you've forgotten your password, tap the **Forgot Password?** link on the Login screen. Enter your registered Email to receive a password reset link. Follow the instructions in the email to set a new password and regain access.
 
-![Logout](screenshots/reset_password.png)
+<p align="center">
+  <img src="screenshots/reset_password.png" alt="My Image" width="300"/>
+</p>
 
 ---
 
