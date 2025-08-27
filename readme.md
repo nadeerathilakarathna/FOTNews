@@ -106,9 +106,9 @@ If you've forgotten your password, tap the **Forgot Password?** link on the Logi
 ## 🛠️ Development Tools
 FOT NEWS was developed using the following tools and technologies:
 
--**Android Studio**: The integrated development environment (IDE) used to build the app.  
--**Java**: The programming language used for the app’s core functionality.  
--**Firebase**: The backend platform powering user authentication, and real-time updates.  
+- **Android Studio**: The integrated development environment (IDE) used to build the app.  
+- **Java**: The programming language used for the app’s core functionality.  
+- **Firebase**: The backend platform powering user authentication, and real-time updates.  
 
 <p align="center">
   <img src="screenshots/tools.png" alt="Tools" height="200"/>
